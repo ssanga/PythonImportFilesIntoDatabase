@@ -38,6 +38,12 @@ def initialise_log_file(path = None):
     logging.info("Effective user is [%s]" % (getpass.getuser()))
 
 def main():
+
+    server = '(localdb)\MSSQLLocalDB' 
+    database = 'Pruebas' 
+    username = 'myusername' 
+    password = 'mypassword' 
+
     try:        
         
         initialise_log_file()
@@ -62,26 +68,24 @@ def main():
                 df['LASTUPDATED'] = pd.to_datetime(now)
                 print(df)
 
+                table_name="Books"
+                conn = create_engine('mssql+pyodbc://(localdb)\MSSQLLocalDB/Pruebas?driver=ODBC Driver 17 for SQL Server?trusted_connection=yes',encoding='iso-8859-1',echo=True)
+                logging.info("Saving data in table " + table_name)
+                 
+                # Very important part related with perfonmance. Replace clob for varchar
+                # https://stackoverflow.com/questions/42727990/speed-up-to-sql-when-writing-pandas-dataframe-to-oracle-database-using-sqlalch?noredirect=1&lq=1
+                dtyp = {c:types.VARCHAR(df[c].str.len().max())
+                for c in df.columns[df.dtypes == 'object'].tolist()}
+        
+                df.to_sql(table_name, conn, if_exists='replace', index=True,dtype=dtyp) #append
 
-        # logging.info('Se va a generar la cadena de conexión')
-        # conn = create_engine('oracle+cx_oracle://user:password@sid:port/?service_name=servicename',encoding='iso-8859-1',echo=True)
-
-        # #truncate_table(conn,'organigrama2')
-        # logging.info('Se van a guardar los datos en la tabla organigrama2')
+                # TODO: Replace index for Id and create primary key
+                logging.info('Data saved for table ' + table_name)
         
-        # # Esta parte es muy importante para el rendimiento, se sustituyen los campos de tipo clob por varchar
-        # # https://stackoverflow.com/questions/42727990/speed-up-to-sql-when-writing-pandas-dataframe-to-oracle-database-using-sqlalch?noredirect=1&lq=1
-        # dtyp = {c:types.VARCHAR(df[c].str.len().max())
-        #     for c in df.columns[df.dtypes == 'object'].tolist()}
+                # # move_file_to_backups(fileName)
         
-        # # df.to_sql('organigrama2', conn, if_exists='replace', index=True,dtype={'NOMBRE': types.VARCHAR(df.NOMBRE.str.len().max())}) #append
-        # # df.to_sql('organigrama2', conn, if_exists='replace', index=True,dtype=dtyp) #append
-        # df.to_sql('empleados', conn, if_exists='replace', index=True,dtype=dtyp) #append
         
-        # # move_file_to_backups(fileName)
-        
-        # logging.info('Datos salvados correctamente')
-        # logging.info('finalizado')
+        logging.info('Program end')
     except exc.SQLAlchemyError  as sqlex:
         print('Sql error')
         logging.error(sqlex)
