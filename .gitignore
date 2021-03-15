@@ -138,3 +138,7 @@ dmypy.json
 cython_debug/
 
 *test.txt
+*test.csv
+/TestDirectory
+/backups
+/TestDirectoryEmpty

@@ -58,3 +58,8 @@ class FilesHelper:
     def get_all_files(self, path):
         list_of_files = glob.glob(path + '*.csv') # * means all if need specific format then *.csv
         return list_of_files
+
+    def delete_files(self, path):
+        files = glob.glob(path + '*.csv')
+        for f in files:
+            os.remove(f)

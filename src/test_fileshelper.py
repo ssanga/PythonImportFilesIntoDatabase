@@ -11,6 +11,8 @@ class FilesHelperTest(unittest.TestCase):
     def setUp(self):
         self.fileshelper = FilesHelper()
         self.configure_folders_and_files()
+
+    
     
     def configure_folders_and_files(self):
         content = 'created from test'
@@ -21,6 +23,9 @@ class FilesHelperTest(unittest.TestCase):
 
         self.empty_folder = os.path.dirname(os.path.abspath(__file__)) +  '\\TestEmptyDirectory\\'
         self.fileshelper.create_directory(self.empty_folder)
+
+    def tearDown(self):
+        self.fileshelper.delete_files(self.working_path)
 
     def test_create_directory(self):
         result = self.fileshelper.create_directory(self.working_path)
