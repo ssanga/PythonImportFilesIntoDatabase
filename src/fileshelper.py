@@ -2,6 +2,7 @@ import os
 import pathlib
 from pathlib import Path
 from shutil import copyfile
+import glob
 
 class FilesHelper:
 
@@ -32,3 +33,28 @@ class FilesHelper:
         result = copyfile(sourcepath, destinationpath + "\\" + backup_file_name)
 
         return result
+
+    def move_file_to_backups(filename):
+        path = os.getcwd()  
+        path = path + '\\Backups\\'
+
+        if not os.path.exists(path):
+            os.mkdir(path)
+    
+        originalFileName = os.path.basename(filename)
+        path = path + "\\" + originalFileName
+    
+        os.replace(filename, path)
+    
+    def get_newest_file(self, path):
+        list_of_files = glob.glob(path + '*.csv') # * means all if need specific format then *.csv
+
+        if(list_of_files is True):
+            latest_file = max(list_of_files, key=os.path.getctime)
+            return latest_file
+        else:
+            return False
+
+    def get_all_files(self, path):
+        list_of_files = glob.glob(path + '*.csv') # * means all if need specific format then *.csv
+        return list_of_files

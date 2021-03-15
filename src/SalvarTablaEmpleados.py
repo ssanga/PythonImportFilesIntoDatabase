@@ -13,27 +13,7 @@ def truncate_table(engine, tableName):
     truncate_query = sqlalchemy.text("TRUNCATE TABLE " + tableName)
     connection.execution_options(autocommit=True).execute(truncate_query)
     
-def move_file_to_backups(filename):
-    import os
-    
-    path = os.getcwd()  
-    path = path + '\\Backups\\'
 
-    if not os.path.exists(path):
-        os.mkdir(path)
-    
-    originalFileName = os.path.basename(filename)
-    path = path + "\\" + originalFileName
-    
-    os.replace(filename, path)
-    
-def get_newest_file(path):
-    import glob
-    import os
-
-    list_of_files = glob.glob(path + '*.txt') # * means all if need specific format then *.csv
-    latest_file = max(list_of_files, key=os.path.getctime)
-    return latest_file
     
 def main():
     
