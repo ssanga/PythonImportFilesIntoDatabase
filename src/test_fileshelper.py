@@ -12,8 +12,6 @@ class FilesHelperTest(unittest.TestCase):
         self.fileshelper = FilesHelper()
         self.configure_folders_and_files()
 
-    
-    
     def configure_folders_and_files(self):
         content = 'created from test'
         self.working_path = os.path.dirname(os.path.abspath(__file__)) +  '\\TestDirectory\\'
