@@ -29,6 +29,10 @@ class FilesHelperTest(unittest.TestCase):
         result = self.fileshelper.create_directory(self.working_path)
         self.assertTrue(result)
 
+    def test_create_directory2(self):
+        result = self.fileshelper.create_directory('test')
+        self.assertTrue(result)
+
        
     def test_backup_file(self):
          result = self.fileshelper.backup_file(self.test_file, self.backup_directory)
