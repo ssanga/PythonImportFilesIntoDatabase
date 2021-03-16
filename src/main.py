@@ -35,7 +35,7 @@ def initialise_log_file(path = None):
     
     logging.info(platform.platform())
     logging.info("Env thinks the user is [%s]" % (os.getlogin()))
-    logging.info("Effective user is [%s]" % (getpass.getuser()))
+    # logging.info("Effective user is [%s]" % (getpass.getuser()))
 
 def main():
 
