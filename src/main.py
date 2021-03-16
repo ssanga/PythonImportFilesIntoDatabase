@@ -64,12 +64,13 @@ def main():
                 logging.info('The file contains ' + str(df.shape[0]) + ' rows')
                 now = datetime.now()
                 # logging.info("now =", str(now))
-                # adding new LastUpdated column
+                # adding new LastUpdated column and renaming index column to Id
                 df['LASTUPDATED'] = pd.to_datetime(now)
+                df.index.rename('Id', inplace=True)
                 print(df)
 
                 table_name="Books"
-                conn = create_engine('mssql+pyodbc://(localdb)\MSSQLLocalDB/Pruebas?driver=ODBC Driver 17 for SQL Server?trusted_connection=yes',encoding='iso-8859-1',echo=True)
+                conn = create_engine('mssql+pyodbc://(localdb)\MSSQLLocalDB/Pruebas?driver=ODBC Driver 17 for SQL Server?trusted_connection=yes',encoding='iso-8859-1',echo=False)
                 logging.info("Saving data in table " + table_name)
                  
                 # Very important part related with perfonmance. Replace clob for varchar
