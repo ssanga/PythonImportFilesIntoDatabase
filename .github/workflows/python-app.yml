@@ -37,6 +37,6 @@ jobs:
         mkdir src/TestDirectory
         mkdir src/TestEmptyDirectory
         ls
-    - name: Test with unittest
-      run: |
-        python -m unittest discover src
+    # - name: Test with unittest
+    #   run: |
+    #     python -m unittest discover src
