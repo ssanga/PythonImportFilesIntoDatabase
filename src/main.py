@@ -67,6 +67,8 @@ def main():
                 # adding new LastUpdated column and renaming index column to Id
                 df['LASTUPDATED'] = pd.to_datetime(now)
                 df.index.rename('Id', inplace=True)
+                # df.drop('Id', 1)
+                # df.reset_index(drop=True, inplace=True)
                 print(df)
 
                 table_name="Books"
@@ -78,7 +80,17 @@ def main():
                 dtyp = {c:types.VARCHAR(df[c].str.len().max())
                 for c in df.columns[df.dtypes == 'object'].tolist()}
         
-                df.to_sql(table_name, conn, if_exists='replace', index=True,dtype=dtyp) #append
+                df.to_sql(table_name, conn, if_exists='replace', index=False,dtype=dtyp) #append
+                # df.to_sql(table_name, conn, if_exists='replace', index=True,dtype=dtyp) #append
+
+                with conn.connect() as con:
+                    # con.execute('ALTER TABLE '+ table_name + ' ALTER COLUMN Id bigint NOT NULL')
+                    # con.execute('ALTER TABLE '+ table_name + ' ADD CONSTRAINT PK_' +table_name +' PRIMARY KEY(Id)')
+                    # con.execute('ALTER TABLE dbo.' + table_name + ' ADD COLUMN Id FIRST')
+                    # con.execute('ALTER TABLE dbo.' + table_name + ' ADD Id bigint IDENTITY CONSTRAINT PK_'+ table_name + ' PRIMARY KEY CLUSTERED ')
+                    con.execute('ALTER TABLE dbo.' + table_name + ' ADD Id bigint IDENTITY CONSTRAINT PK_'+ table_name + ' PRIMARY KEY CLUSTERED ')
+                    # con.execute('ALTER TABLE '+ table_name + ' ALTER COLUMN Id bigint NOT NULL')
+                    
 
                 # TODO: Replace index for Id and create primary key
                 logging.info('Data saved for table ' + table_name)
