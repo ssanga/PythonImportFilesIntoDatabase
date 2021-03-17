@@ -2,12 +2,13 @@ from fileshelper import FilesHelper
 import pandas as pd
 import os
 import sys
-import getpass
-import cx_Oracle
 from sqlalchemy import types, create_engine, exc
 from datetime import datetime
 import logging
 import platform
+import getpass
+# import cx_Oracle
+
 
 def initialise_log_file(path = None):
 
@@ -35,7 +36,7 @@ def initialise_log_file(path = None):
     
     logging.info(platform.platform())
     logging.info("Env thinks the user is [%s]" % (os.getlogin()))
-    # logging.info("Effective user is [%s]" % (getpass.getuser()))
+    logging.info("Effective user is [%s]" % (getpass.getuser()))
 
 def main():
 
@@ -50,10 +51,10 @@ def main():
 
         filesHelper = FilesHelper()
 
-        path = os.getcwd()  
-        path = path + '\\ExampleFiles\\'
-        logging.info("Searching files in " + path)
-        files = filesHelper.get_all_files(path)
+        searchpath = os.getcwd()  
+        searchpath = searchpath + '\\ExampleFiles\\'
+        logging.info("Searching files in " + searchpath)
+        files = filesHelper.get_all_files(searchpath)
 
         if(len(files)>0):
             logging.info(str(len(files)) + " file(s) found")
@@ -63,23 +64,19 @@ def main():
                 df = pd.read_csv(fileName,sep=',',engine='python',encoding='iso-8859-1')
                 logging.info('The file contains ' + str(df.shape[0]) + ' rows')
                 now = datetime.now()
-                # logging.info("now =", str(now))
+                logging.info("now =", str(now))
                 # adding new LastUpdated column and renaming index column to Id
                 df['LASTUPDATED'] = pd.to_datetime(now)
                 df.index.rename('Id', inplace=True)
-                # df.drop('Id', 1)
-                # df.reset_index(drop=True, inplace=True)
-                print(df)
 
-                # table_name="Books"
                 table_name = filesHelper.get_file_name_without_extension(fileName)
 
                 conn = create_engine('mssql+pyodbc://(localdb)\MSSQLLocalDB/Pruebas?driver=ODBC Driver 17 for SQL Server?trusted_connection=yes',encoding='iso-8859-1',echo=False)
                 logging.info("Saving data in table " + table_name)
                  
-                # Very important part related with perfonmance. Replace clob for varchar
+                # Very important part related with perfonmance. Replace clob for varchar and set the maxlength of the field
                 # https://stackoverflow.com/questions/42727990/speed-up-to-sql-when-writing-pandas-dataframe-to-oracle-database-using-sqlalch?noredirect=1&lq=1
-                dtyp = {c:types.VARCHAR(df[c].str.len().max())
+                dtyp = {c:types.VARCHAR(int(df[c].str.len().max()))
                 for c in df.columns[df.dtypes == 'object'].tolist()}
         
                 df.to_sql(table_name, conn, if_exists='replace', index=False,dtype=dtyp) #append
@@ -95,12 +92,14 @@ def main():
                     con.execute(script)
                     # con.execute('ALTER TABLE '+ table_name + ' ALTER COLUMN Id bigint NOT NULL')
                     
-
-                # TODO: Replace index for Id and create primary key
                 logging.info('Data saved for table ' + table_name)
-        
-                # # move_file_to_backups(fileName)
-        
+
+                logging.info('Moving file from input to backup folder ')
+                file_prefix = now.strftime('%Y%m%d%H%M%S%f') [:-3]
+                filesHelper.move_file_to_backups(fileName, file_prefix)
+
+        else:
+            logging.warning('No file(s) found in ' + searchpath)
         
         logging.info('Program end')
     except exc.SQLAlchemyError  as sqlex:

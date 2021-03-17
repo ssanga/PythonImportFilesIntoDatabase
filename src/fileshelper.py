@@ -39,7 +39,7 @@ class FilesHelper:
 
         return result
 
-    def move_file_to_backups(filename):
+    def move_file_to_backups(self, filename, file_prefix=None):
         path = os.getcwd()  
         path = path + '\\Backups\\'
 
@@ -47,8 +47,12 @@ class FilesHelper:
             os.mkdir(path)
     
         originalFileName = os.path.basename(filename)
-        path = path + "\\" + originalFileName
-    
+
+        if(file_prefix != None):
+            originalFileName = file_prefix + "_" + os.path.basename(filename)
+
+        path = path + originalFileName
+
         os.replace(filename, path)
     
     def get_newest_file(self, path):
