@@ -71,7 +71,9 @@ def main():
                 # df.reset_index(drop=True, inplace=True)
                 print(df)
 
-                table_name="Books"
+                # table_name="Books"
+                table_name = filesHelper.get_file_name_without_extension(fileName)
+
                 conn = create_engine('mssql+pyodbc://(localdb)\MSSQLLocalDB/Pruebas?driver=ODBC Driver 17 for SQL Server?trusted_connection=yes',encoding='iso-8859-1',echo=False)
                 logging.info("Saving data in table " + table_name)
                  
@@ -88,7 +90,9 @@ def main():
                     # con.execute('ALTER TABLE '+ table_name + ' ADD CONSTRAINT PK_' +table_name +' PRIMARY KEY(Id)')
                     # con.execute('ALTER TABLE dbo.' + table_name + ' ADD COLUMN Id FIRST')
                     # con.execute('ALTER TABLE dbo.' + table_name + ' ADD Id bigint IDENTITY CONSTRAINT PK_'+ table_name + ' PRIMARY KEY CLUSTERED ')
-                    con.execute('ALTER TABLE dbo.' + table_name + ' ADD Id bigint IDENTITY CONSTRAINT PK_'+ table_name + ' PRIMARY KEY CLUSTERED ')
+                    script = 'ALTER TABLE dbo.' + table_name + ' ADD Id bigint IDENTITY CONSTRAINT PK_'+ table_name + ' PRIMARY KEY CLUSTERED '
+                    logging.info(script)
+                    con.execute(script)
                     # con.execute('ALTER TABLE '+ table_name + ' ALTER COLUMN Id bigint NOT NULL')
                     
 

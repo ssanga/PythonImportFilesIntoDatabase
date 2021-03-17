@@ -8,6 +8,11 @@ class FilesHelper:
 
     def __init__(self):
         pass
+    
+    def get_file_name_without_extension(self, path):
+        name = Path(path).stem
+        name = name.replace('-','_')
+        return name
 
     def create_directory(self, path):
         if(os.path.isdir(path) ==False):
