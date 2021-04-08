@@ -1,6 +1,7 @@
 from fileshelper import FilesHelper
 import unittest
 import os
+from unittest.mock import MagicMock
 
 # Control + Shift + P
 # Python: Configure Tests
