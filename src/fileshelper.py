@@ -19,7 +19,7 @@ class FilesHelper:
             try:
                 return os.mkdir(path)
             except OSError:
-                return False
+                return OSError
         else:
             return True
 
