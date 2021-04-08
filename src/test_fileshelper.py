@@ -27,6 +27,7 @@ class FilesHelperTest(unittest.TestCase):
         self.fileshelper.delete_files(self.working_path)
 
     def test_create_directory(self):
+        print(self.working_path)
         result = self.fileshelper.create_directory(self.working_path)
         self.assertTrue(result)
 
