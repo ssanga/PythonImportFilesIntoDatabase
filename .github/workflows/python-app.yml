@@ -35,6 +35,8 @@ jobs:
       run: |
         mkdir src/TestDirectory
         mkdir src/TestEmptyDirectory
+        mkdir TestDirectory
+        mkdir TestEmptyDirectory
         ls
         pwd
     - name: Test with unittest
